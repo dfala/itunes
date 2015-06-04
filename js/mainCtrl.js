@@ -7,25 +7,32 @@ app.controller('mainCtrl', function ($scope, itunesService){
   $scope.gridOptions = { 
       data: 'songData',
       height: '110px',
-      sortInfo: {fields: ['Song', 'artistName', 'collectionName', 'kind', 'trackPrice'], directions: ['asc']},
+      sortInfo: {fields: ['Song', 'Artist', 'Collection', 'Type', 'CollectionPrice'], directions: ['asc']},
       columnDefs: [
-        {field: 'Play', displayName: 'Play', width: '40px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><a href="{{row.getProperty(col.field)}}"><img src="http://www.icty.org/x/image/Miscellaneous/play_icon30x30.png"></a></div>'},
-        {field: 'trackName', displayName: 'Song'},
-        {field: 'artistName', displayName: 'Artist'},
-        {field: 'collectionName', displayName: 'Collection'},
-        {field: 'artworkUrl100', displayName: 'Album Art', width: '110px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><img src="{{row.getProperty(col.field)}}"></div>'},
-        {field: 'kind', displayName: 'Type'},
-        {field: 'trackPrice', displayName: 'Collection Price'},
+        {field: 'Play', displayName: 'Play', width: '40px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><a href="{{row.getProperty(col.field)}}" target="_blank"><img src="http://www.icty.org/x/image/Miscellaneous/play_icon30x30.png"></a></div>'},
+        {field: 'Song', displayName: 'Song'},
+        {field: 'Artist', displayName: 'Artist'},
+        {field: 'Collection', displayName: 'Collection'},
+        {field: 'AlbumArt', displayName: 'Album Art', width: '110px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><img src="{{row.getProperty(col.field)}}"></div>'},
+        {field: 'Type', displayName: 'Type'},
+        {field: 'CollectionPrice', displayName: 'Collection Price'},
       ]
   };
+
+  $scope.$watch("artist", function(newValue, oldValue) {
+    if (newValue !== undefined) {
+      $scope.getSongData(newValue);
+    }
+  });
 
 
     
   $scope.getSongData = function (artistName) {
     itunesService.getData(artistName)
       .then(function (response) {
-        console.log(response);
         $scope.songData = response;
+      }, function (err) {
+        console.error(err);
       })
   }
 
